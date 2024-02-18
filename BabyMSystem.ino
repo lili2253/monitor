@@ -8,7 +8,7 @@
 
 const char *ssid = "Hardware-Lab";
 const char *password = "H@rdw@re2o23";
-const char *server_address = "http://192.168.30.130/baby_monitor/baby_monitor.php";
+const char *server_address = "http://localhost/baby_monitor/baby_monitor.php";
 
 #define DHTPIN 2     // D4 pin for DHT sensor
 #define DHTTYPE DHT11   // DHT 11
@@ -26,6 +26,7 @@ void setup() {
   }
 
   Serial.println("Connected to WiFi");
+  Serial.println(WiFi.localIP());
   dht.begin();
 }
 
@@ -75,7 +76,7 @@ void sendTemperatureData(float temperature, int humidity) {
       Serial.println("HTTP request failed");
       // Handle the failure (e.g., retry, notify user)
     }
-  } else {
+  } else  {
     Serial.println("Error sending HTTP request");
     // Handle the error (e.g., retry, check network connection)
   }
