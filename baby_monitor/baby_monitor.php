@@ -4,13 +4,13 @@
     <title>ESP8266 WITH MYSQL DATABASE</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <link rel="icon" href="data:,https://www.iconfinder.com/search?q=fan">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
       html {font-family: Arial; display: inline-block; text-align: center;}
       p {font-size: 1.2rem;}
       h4 {font-size: 0.8rem;}
       body {margin: 0;}
-      .topnav {overflow: hidden;background:linear-gradient(to bottom right, #70c1b3, #247b9f) }
+      .topnav {overflow: hidden;background:linear-gradient(to bottom right, #70c1b3, #247b9f);color:white; }
       .content {padding: 5px; }
       .card {background-color: white; box-shadow: 0px 0px 10px 1px rgba(140,140,140,.5); border: 1px solid #0c6980; border-radius: 15px;}
       .card.header {background-color: #0c6980; color: white; border-bottom-right-radius: 0px; border-bottom-left-radius: 0px; border-top-right-radius: 12px; border-top-left-radius: 12px;}
@@ -119,13 +119,18 @@
     </style>
   </head>
   <body>
+   
+  <body>
     <div class="topnav">
-      <h3 class="esp_color">ESP8266 WITH MYSQL DATABASE</h3>
+      <h3>ESP8266 WITH MYSQL DATABASE</h3>
     </div>
+    
     <br>
+    
     <!-- __ DISPLAYS MONITORING AND CONTROLLING ____________________________________________________________________________________________ -->
     <div class="content">
       <div class="cards">
+        
         <!-- == MONITORING ======================================================================================== -->
         <div class="card">
           <div class="card header">
@@ -134,11 +139,12 @@
           
           <!-- Displays the humidity and temperature values received from ESP32. *** -->
           <h4 class="temperatureColor"><i class="fas fa-thermometer-half"></i> TEMPERATURE</h4>
-          <p class="temperatureColor"><span class="reading"><span id="ESP_01_Temp"></span> &deg;C</span></p>
+          <p class="temperatureColor"><span class="reading"><span id="ESP8266_01_Temp"></span> &deg;C</span></p>
           <h4 class="humidityColor"><i class="fas fa-tint"></i> HUMIDITY</h4>
-          <p class="humidityColor"><span class="reading"><span id="ESP_01_Humd"></span> &percnt;</span></p>
+          <p class="humidityColor"><span class="reading"><span id="ESP8266_01_Humd"></span> &percnt;</span></p>
           <!-- *********************************************************************** -->
-
+          
+          <p class="statusreadColor"><span>Status Read Sensor DHT11 : </span><span id="ESP8266_01_Status_Read_DHT11"></span></p>
         </div>
         <!-- ======================================================================================================= -->
         
@@ -148,14 +154,13 @@
             <h3 style="font-size: 1rem;">CONTROLLING</h3>
           </div>
           
-          <!-- Buttons for controlling the Fan on Slave 2. ************************** -->
-          <h4 class="FanColor"><i class="fas fa-fan"></i> Fan</h4>
+          <!-- Buttons for controlling the LEDs on Slave 2. ************************** -->
+          <h4 class="LEDColor"><i class="fas fa-fan fan-icon"></i> Fan</h4>
           <label class="switch">
-            <input type="checkbox" id="ESP32_01_TogLED_01" onclick="GetTogBtnLEDState('ESP32_01_TogLED_01')">
+            <input type="checkbox" id="ESP8266_01_Fan" onclick="GetTogBtnLEDState('ESP8266_01_Fan')">
             <div class="sliderTS"></div>
           </label>
-         
-          <!-- *********************************************************************** -->
+        
         </div>  
         <!-- ======================================================================================================= -->
         
@@ -163,138 +168,92 @@
     </div>
     
     <br>
+    
     <!-- ___________________________________________________________________________________________________________________________________ -->
     
     <script>
-      //------------------------------------------------------------
-      document.getElementById("ESP32_01_Temp").innerHTML = "NN"; 
-      document.getElementById("ESP32_01_Humd").innerHTML = "NN";
-      document.getElementById("ESP32_01_Status_Read_DHT11").innerHTML = "NN";
-      document.getElementById("ESP32_01_LTRD").innerHTML = "NN";
-      //------------------------------------------------------------
-      
-      Get_Data("esp32_01");
-      
-      setInterval(myTimer, 5000);
-
-      function myTimer() {
-        Get_Data("esp32_01");
-      }
-      function Get_Data(id) {
-				if (window.XMLHttpRequest) {
-          // code for IE7+, Firefox, Chrome, Opera, Safari
-          xmlhttp = new XMLHttpRequest();
+    //------------------------------------------------------------
+    document.getElementById("ESP8266_01_Temp").innerHTML = "NN"; 
+    document.getElementById("ESP8266_01_Humd").innerHTML = "NN";
+    document.getElementById("ESP8266_01_Status_Read_DHT11").innerHTML = "NN";
+   
+    //------------------------------------------------------------
+    
+    Get_Data("esp8266_01");
+    
+    setInterval(myTimer, 5000);
+    
+    //------------------------------------------------------------
+    function myTimer() {
+        Get_Data("esp8266_01");
+    }
+    //------------------------------------------------------------
+    
+    //------------------------------------------------------------
+    function Get_Data(id) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // code for modern browsers
+            xmlhttp = new XMLHttpRequest();
         } else {
-          // code for IE6, IE5
-          xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            // code for old IE browsers
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         xmlhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-            const myObj = JSON.parse(this.responseText);
-            if (myObj.id == "esp32_01") {
-              document.getElementById("ESP32_01_Temp").innerHTML = myObj.temperature;
-              document.getElementById("ESP32_01_Humd").innerHTML = myObj.humidity;
-          }
+            if (this.readyState == 4 && this.status == 200) {
+                const myObj = JSON.parse(this.responseText);
+                if (myObj.id == "esp32_01") {
+                    document.getElementById("ESP8266_01_Temp").innerHTML = myObj.temperature;
+                    document.getElementById("ESP8266_01_Humd").innerHTML = myObj.humidity;
+                    document.getElementById("ESP8266_01_Status_Read_DHT11").innerHTML = myObj.status_read_sensor_dht11;
+                    
+                    if (myObj.Fan == "ON") {
+                        document.getElementById("ESP8266_01_Fan").checked = true;
+                    } else if (myObj.Fan == "OFF") {
+                        document.getElementById("ESP8266_01_Fan").checked = false;
+                    }
+                }  
+            }
         };
         xmlhttp.open("POST","getdata.php",true);
         xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xmlhttp.send("id="+id);
-			}
-    </script>
-
-<?php
-	class Database {
-		private static $dbName = 'temperature_data'; // Example: private static $dbName = 'myDB';
-		private static $dbHost = 'localhost'; // Example: private static $dbHost = 'localhost';
-		private static $dbUsername = 'root'; // Example: private static $dbUsername = 'myUserName';
-		private static $dbUserPassword = ''; // // Example: private static $dbUserPassword = 'myPassword';
-		 
-		private static $cont  = null;
-		 
-		public function __construct() {
-			die('Init function is not allowed');
-		}
-		 
-		public static function connect() {
-      // One connection through whole application
-      if ( null == self::$cont ) {     
-        try {
-          self::$cont =  new PDO( "mysql:host=".self::$dbHost.";"."dbname=".self::$dbName, self::$dbUsername, self::$dbUserPassword); 
-        } catch(PDOException $e) {
-          die($e->getMessage()); 
-        }
-      }
-      return self::$cont;
-		}
-		 
-		public static function disconnect() {
-			self::$cont = null;
-		}
-	}
-    if (!empty($_POST)) {
-        //........................................ keep track POST values
-        $id = $_POST['id'];
-        $temperature = $_POST['temperature'];
-        $humidity = $_POST['humidity'];
-        $pdo = Database::connect();
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "UPDATE temperature_update SET temperature = ?, humidity = ? WHERE id = ?";
-    $q = $pdo->prepare($sql);
-    $q->execute(array($temperature,$humidity,$id));
-    Database::disconnect();
-    $id_key;
-    $board = $_POST['id'];
-    $found_empty = false;
-    
-    $pdo = Database::connect();
-    
-    //:::::::: Process to check if "id" is already in use.
-    while ($found_empty == false) {
-      $id_key = generate_string_id(10);
-      $sql = 'SELECT * FROM temperature_update WHERE id="' . $id_key . '"';
-      $q = $pdo->prepare($sql);
-      $q->execute();
-      
-      if (!$data = $q->fetch()) {
-        $found_empty = true;
-      }
     }
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $sql = "INSERT INTO temperature_update (id,temperature,humidity) values(?, ?, ?)";
-		$q = $pdo->prepare($sql);
-		$q->execute(array($id_key,$temperature,$humidity));
-    //::::::::
+    //------------------------------------------------------------
     
-    Database::disconnect();
-}
-//---------------------------------------- Function to create "id" based on numbers and characters.
-function generate_string_id($strength = 16) {
-  $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  $input_length = strlen($permitted_chars);
-  $random_string = '';
-  for($i = 0; $i < $strength; $i++) {
-    $random_character = $permitted_chars[mt_rand(0, $input_length - 1)];
-    $random_string .= $random_character;
-  }
-  return $random_string;
-}
-if (!empty($_POST)) {
-  // keep track post values
-  $id = $_POST['id'];
-  
-  $myObj = (object)array();
-  $sql = 'SELECT * FROM replace_with_your_table_name WHERE id="' . $id . '"';
-  foreach ($pdo->query($sql) as $row) {
-    $myObj->id = $row['id'];
-    $myObj->temperature = $row['temperature'];
-    $myObj->humidity = $row['humidity'];
-  //........................................ 
-  $pdo = Database::connect();
-  $myJSON = json_encode($myObj);
-      
-  echo $myJSON;
-}
-Database::disconnect();
-} ?>
-</body>
+    //------------------------------------------------------------
+    function GetTogBtnLEDState(togbtnid) {
+        if (togbtnid == "ESP8266_01_Fan") {
+            var togbtnchecked = document.getElementById(togbtnid).checked;
+            var togbtncheckedsend = "";
+            if (togbtnchecked == true) togbtncheckedsend = "ON";
+            if (togbtnchecked == false) togbtncheckedsend = "OFF";
+            Update_Fan("esp8266_01", "fan", togbtncheckedsend);
+        }
+    }
+    //------------------------------------------------------------
+    
+    //------------------------------------------------------------
+    function Update_Fan(id, Fnum, Fstate) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) {
+            // code for modern browsers
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            // code for old IE browsers
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // you can handle response if needed
+            }
+        }
+        xmlhttp.open("POST","updateFan.php",true);
+        xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlhttp.send("id="+id+"&Fnum="+Fnum+"&Fstate="+Fstate);
+    }
+    //------------------------------------------------------------
+</script>
+
+  </body>
 </html>
